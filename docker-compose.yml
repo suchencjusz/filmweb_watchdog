@@ -1,0 +1,29 @@
+version: '3'
+services:
+  selenium:
+    container_name: selenium
+    image: selenium/standalone-chrome
+    ports:
+      - 4444:4444
+
+  filmweb_watchdog:
+    depends_on:
+      - selenium
+    container_name: filmweb_watchdog
+    image: filmweb_watchdog
+    volumes:
+      - type: volume
+        source: database
+        target: /db
+        volume:
+          nocopy: true
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      FILMWEB_USER: "****"
+      DISCORD_WEBHOOK_URL: "******"
+      DISCORD_WEBHOOK_COLOR: "ffae00"
+
+volumes:
+  database:
