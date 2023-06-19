@@ -3,11 +3,11 @@ import selenium.common.exceptions
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+# from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
-# from selenium.webdriver.chrome.service import Service as ChromeService
+from selenium.webdriver.chrome.service import Service as ChromeService
 
-# from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.chrome import ChromeDriverManager
 
 from modules.MovieDataObject import MovieData
 
@@ -20,16 +20,18 @@ class FilmWebScrapper:
         options.add_argument("--log-level=3")
         options.add_argument("--blink-settings=imagesEnabled=false")
 
-        # self.driver = webdriver.Chrome(
-        #     service=ChromeService(ChromeDriverManager().install()), options=options
-        # )
-
-        self.driver = webdriver.Remote(
-            command_executor="http://localhost:4444/wd/hub",
-            desired_capabilities=DesiredCapabilities.CHROME,
+        self.driver = webdriver.Chrome(
+            service=ChromeService(ChromeDriverManager().install()), options=options
         )
 
-        self.driver.implicitly_wait(30)
+        # time.sleep(10)
+        # self.driver = webdriver.Remote(
+        #     command_executor='http://selenium:4444/wd/hub',
+        #     options=options
+        # )
+        # time.sleep(10)
+
+        self.driver.implicitly_wait(60)
 
         self.get_ready()
 
