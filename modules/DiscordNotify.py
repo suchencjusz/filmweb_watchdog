@@ -37,7 +37,9 @@ class DiscordNotify:
         embed.add_embed_field(name="⭐", value=f"{movie.user_rating}/10")
 
         if movie.user_text_opinion != "":
-            embed.add_embed_field(name="Opinion", value=movie.user_text_opinion, inline=False)
+            embed.add_embed_field(
+                name="Opinion", value=movie.user_text_opinion, inline=False
+            )
 
         embed.add_embed_field(name="", value="", inline=False)
 
@@ -48,7 +50,9 @@ class DiscordNotify:
         embed.set_footer(text="Filmweb Watchdog • github.com/suchencjusz")
         embed.set_timestamp()
 
-        webhook = DiscordWebhook(url=self.webhook_url, embeds=[embed], rate_limit_retry=True)
+        webhook = DiscordWebhook(
+            url=self.webhook_url, embeds=[embed], rate_limit_retry=True
+        )
         webhook.execute()
 
     def start_emoji_counter(self, stars: float) -> str:

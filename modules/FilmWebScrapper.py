@@ -5,24 +5,18 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 # from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
-from selenium.webdriver.chrome.service import Service as ChromeService
-
-from webdriver_manager.chrome import ChromeDriverManager
-
 from modules.MovieDataObject import MovieData
 
 
 class FilmWebScrapper:
     def __init__(self):
         options = webdriver.ChromeOptions()
-        options.add_argument("--headless")
+        # options.add_argument("--headless")
         options.add_argument("window-size=1920x1080")
         options.add_argument("--log-level=3")
-        options.add_argument("--blink-settings=imagesEnabled=false")
+        # options.add_argument("--blink-settings=imagesEnabled=false")
 
-        self.driver = webdriver.Chrome(
-            service=ChromeService(ChromeDriverManager().install()), options=options
-        )
+        self.driver = webdriver.Chrome(options=options)
 
         # time.sleep(10)
         # self.driver = webdriver.Remote(
@@ -31,7 +25,7 @@ class FilmWebScrapper:
         # )
         # time.sleep(10)
 
-        self.driver.implicitly_wait(60)
+        self.driver.implicitly_wait(30)
 
         self.get_ready()
 
@@ -69,6 +63,8 @@ class FilmWebScrapper:
         url = f"https://www.filmweb.pl/user/{filmweb_user}/films"
         movies_return = []
 
+        print(url)
+
         try:
             self.driver.get(url)
         except Exception as e:
@@ -86,13 +82,19 @@ class FilmWebScrapper:
 
         time.sleep(3)
 
+        print("Parsing movies from FilmWeb")
+
         movies = self.driver.find_element(
-            By.XPATH, "/html/body/div[6]/div[4]/div/section[2]/section/div/div"
+            By.XPATH, '//*[@id="site"]/div[3]/div/section[2]/section/div/div'
         )
+        print("Movies parsed")
+
+        print("Parsing movies from FilmWeb")
         movies_parsed = movies.find_elements(
             By.XPATH,
             '//div[@class="voteBoxes__box userVotesPage__result __FiltersResult animatedPopList__item"]',
         )
+        print("Movies parsed")
 
         rendered_movies_rates = movies.find_elements(
             By.XPATH, '//span[@class="userRate__rate"]'
@@ -158,5 +160,7 @@ class FilmWebScrapper:
                         rated_by=filmweb_user,
                     )
                 )
+
+        movies_return = movies_return[::-1]
 
         return movies_return

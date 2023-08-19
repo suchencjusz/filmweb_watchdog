@@ -4,9 +4,21 @@ from modules.FilmWebScrapper import FilmWebScrapper
 
 class FilmWebWatchdog:
     def __init__(self, filmweb_user: str):
-        self.db_manager = DBManager()
+        self.db_manager = DBManager(filmweb_user=filmweb_user)
         self.filmweb_scraper = FilmWebScrapper()
         self.filmweb_user = filmweb_user
+
+    def change_user(self, filmweb_user: str) -> None:
+        """
+        Change user.
+
+        :param filmweb_user: new filmweb user
+
+        :return: None
+        """
+
+        self.filmweb_user = filmweb_user
+        self.db_manager.filmweb_user = filmweb_user
 
     def get_all_watched_movies_from_db(self) -> list:
         """
@@ -17,7 +29,7 @@ class FilmWebWatchdog:
 
         conn = self.db_manager.connect()
         c = conn.cursor()
-        c.execute("SELECT * FROM user_watched_movies")
+        c.execute("SELECT * FROM %s" % self.filmweb_user)
         movies = c.fetchall()
         conn.close()
         return movies
@@ -61,7 +73,9 @@ class FilmWebWatchdog:
 
         for filmweb_movie in filmweb_movies:
             if int(filmweb_movie.movie_id) in already_in_db_ids:
-                print(f"{filmweb_movie.movie_title} {filmweb_movie.movie_id} is already in the database")
+                print(
+                    f"{filmweb_movie.movie_title} {filmweb_movie.movie_id} is already in the database"
+                )
                 continue
 
             movies_to_add_to_db.append(filmweb_movie)

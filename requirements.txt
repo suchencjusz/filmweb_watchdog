@@ -33,6 +33,7 @@ tomli==2.0.1
 tqdm==4.65.0
 trio==0.22.0
 trio-websocket==0.10.3
+ujson==5.8.0
 urllib3==2.0.3
 webdriver-manager==3.8.6
 wsproto==1.2.0

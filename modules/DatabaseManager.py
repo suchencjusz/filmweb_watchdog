@@ -2,14 +2,17 @@ import sqlite3
 
 
 class DBManager:
+    def __init__(self, filmweb_user: str):
+        self.filmweb_user = filmweb_user
+
     def create_database(self) -> None:
         conn = sqlite3.connect("db/database.db")
         c = conn.cursor()
         c.execute(
-            """CREATE TABLE IF NOT EXISTS user_watched_movies (
+            """CREATE TABLE IF NOT EXISTS %s (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            movie_id INTEGER
-        )"""
+            movie_id INTEGER)"""
+            % self.filmweb_user
         )
 
         conn.commit()
@@ -36,7 +39,7 @@ class DBManager:
 
         conn = self.connect()
         c = conn.cursor()
-        c.execute("INSERT INTO user_watched_movies (movie_id) VALUES (?)", (movie_id,))
+        c.execute(f"INSERT INTO {self.filmweb_user} (movie_id) VALUES (?)", (movie_id,))
         conn.commit()
         conn.close()
 
