@@ -1,17 +1,18 @@
 version: "3.6"
 
 services:
-  headless_chrome:
-    image: browserless/chrome:latest
+  chrome:
+    image: selenium/standalone-chrome:latest
+    hostname: chrome
+    privileged: true
+    shm_size: 2g
     ports:
-      - "3000:3000"
-    container_name: headless_chrome
-    environment:
-      - DEBUG=-*
+      - "4444:4444"
+    restart: unless-stopped
 
   filmweb_watchdog:
     depends_on:
-      - headless_chrome
+      - chrome
     container_name: filmweb_watchdog
     image: filmweb_watchdog
     volumes:
@@ -21,3 +22,12 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    environment:
+      - DOCKER_CONTAINER=True
+    restart: unless-stopped
+
+  restarter:
+    image: docker:cli
+    volumes: ["/var/run/docker.sock:/var/run/docker.sock"]
+    command: ["/bin/sh", "-c", "while true; do sleep 43200; docker restart filmweb_watchdog; done"]
+    restart: unless-stopped
