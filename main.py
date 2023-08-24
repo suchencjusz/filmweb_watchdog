@@ -12,6 +12,8 @@ def main():
     dc_notify = DiscordNotify(config["discord"]["webhook_url"], "ff0000")
 
     for user in config["users"]:
+        print(f"Checking {user['name']} movies...")
+
         fm_watchdog.change_user(user["name"])
         db_movies = fm_watchdog.get_all_watched_movies_from_db()
         filmweb_movies = fm_watchdog.get_all_watched_movies_from_filmweb()
@@ -32,5 +34,6 @@ def main():
 
 
 if __name__ == "__main__":
-    time.sleep(5)
+    print("Starting FilmWebWatchdog...")
+    time.sleep(10)
     main()
