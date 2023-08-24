@@ -1,29 +1,33 @@
 version: "3.6"
 
-
-
 services:
-  selenium:
-    image: selenium/standalone-chrome
+  chrome:
+    image: selenium/standalone-chrome:latest
+    hostname: chrome
+    privileged: true
+    shm_size: 2g
     ports:
-      - 4444:4444
-    restart: always
+      - "4444:4444"
+    restart: unless-stopped
 
   filmweb_watchdog:
     depends_on:
-      - selenium
+      - chrome
     container_name: filmweb_watchdog
     image: filmweb_watchdog
-    # volumes:
-    #   - type: volume
-    #     source: database
-    #     target: /db
-    #     volume:
-    #       nocopy: true
+    volumes:
+      - type: bind
+        source: ./data
+        target: /data
     build:
       context: .
       dockerfile: Dockerfile
     environment:
-      FILMWEB_USER: "****"
-      DISCORD_WEBHOOK_URL: "******"
-      DISCORD_WEBHOOK_COLOR: "ffae00"
+      - DOCKER_CONTAINER=True
+    restart: unless-stopped
+
+  restarter:
+    image: docker:cli
+    volumes: ["/var/run/docker.sock:/var/run/docker.sock"]
+    command: ["/bin/sh", "-c", "while true; do sleep 43200; docker restart filmweb_watchdog; done"]
+    restart: unless-stopped

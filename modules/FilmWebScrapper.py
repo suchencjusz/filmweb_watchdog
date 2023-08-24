@@ -1,29 +1,31 @@
 import time
+import os
 import selenium.common.exceptions
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-# from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 from modules.MovieDataObject import MovieData
 
 
+DOCKER_CONTAINER = os.environ.get('DOCKER_CONTAINER', False)
+
+
 class FilmWebScrapper:
     def __init__(self):
-        options = webdriver.ChromeOptions()
-        # options.add_argument("--headless")
-        options.add_argument("window-size=1920x1080")
-        options.add_argument("--log-level=3")
-        # options.add_argument("--blink-settings=imagesEnabled=false")
-
-        self.driver = webdriver.Chrome(options=options)
-
-        # time.sleep(10)
-        # self.driver = webdriver.Remote(
-        #     command_executor='http://selenium:4444/wd/hub',
-        #     options=options
-        # )
-        # time.sleep(10)
+        chrome_options = webdriver.ChromeOptions()
+        chrome_options.add_argument("--no-sandbox")
+        chrome_options.add_argument("--headless")
+        chrome_options.add_argument("--window-size=1920,1080")
+        chrome_options.add_argument("--start-maximized")
+    
+        if DOCKER_CONTAINER:
+            self.driver = webdriver.Remote(
+            command_executor='http://chrome:4444',
+                options=chrome_options,
+            )
+        else:
+            self.driver = webdriver.Chrome(options=chrome_options)
 
         self.driver.implicitly_wait(30)
 
@@ -131,9 +133,10 @@ class FilmWebScrapper:
                     By.CLASS_NAME, "preview__link"
                 ).get_attribute("href")
 
-                movie_poster_url = movie.find_element(
-                    By.CLASS_NAME, "poster__image"
-                ).get_attribute("src")
+                movie_poster_url = "https://kranus.pro/kranus.pro.gif"
+                # movie_poster_url = movie.find_element(
+                #     By.CLASS_NAME, "poster__image"
+                # ).get_attribute("src")
 
                 movie_user_rate = rendered_movies_rates[idx].text
 
