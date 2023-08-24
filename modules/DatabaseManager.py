@@ -6,7 +6,7 @@ class DBManager:
         self.filmweb_user = filmweb_user
 
     def create_database(self) -> None:
-        conn = sqlite3.connect("db/database.sqlite3")
+        conn = sqlite3.connect("data/database.sqlite3")
         c = conn.cursor()
         c.execute(
             """CREATE TABLE IF NOT EXISTS %s (
@@ -26,7 +26,7 @@ class DBManager:
         """
 
         self.create_database()
-        return sqlite3.connect("db/database.sqlite3")
+        return sqlite3.connect("data/database.sqlite3")
 
     def insert_one_movie_to_db(self, movie_id: int) -> None:
         """

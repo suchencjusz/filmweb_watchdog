@@ -1,10 +1,12 @@
+import time
+
 from modules.FilmwebWatchod import FilmWebWatchdog
 from modules.DiscordNotify import DiscordNotify
 from modules.ConfigManager import ConfigManager
 
 
 def main():
-    config = ConfigManager("config.json").load()
+    config = ConfigManager("data/config.json").load()
 
     fm_watchdog = FilmWebWatchdog("hello")
     dc_notify = DiscordNotify(config["discord"]["webhook_url"], "ff0000")
@@ -26,8 +28,9 @@ def main():
         else:
             print("No new movies to add to database.")
 
-    fm_watchdog.filmweb_scraper.close_driver()
+    # fm_watchdog.filmweb_scraper.close_driver()
 
 
 if __name__ == "__main__":
+    time.sleep(5)
     main()

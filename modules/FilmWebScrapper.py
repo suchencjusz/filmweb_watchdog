@@ -10,13 +10,17 @@ from modules.MovieDataObject import MovieData
 
 class FilmWebScrapper:
     def __init__(self):
-        options = webdriver.ChromeOptions()
-        # options.add_argument("--headless")
-        options.add_argument("window-size=1920x1080")
-        options.add_argument("--log-level=3")
+        chrome_options = webdriver.ChromeOptions()
+        chrome_options.add_argument("--no-sandbox")
+        chrome_options.add_argument("--headless")
+    
+        self.driver = webdriver.Remote(
+        command_executor='http://headless_chrome:3000/webdriver',
+            options=chrome_options,
+        )
         # options.add_argument("--blink-settings=imagesEnabled=false")
 
-        self.driver = webdriver.Chrome(options=options)
+        # self.driver = webdriver.Chrome(options=chrome_options)
 
         # time.sleep(10)
         # self.driver = webdriver.Remote(
@@ -131,9 +135,10 @@ class FilmWebScrapper:
                     By.CLASS_NAME, "preview__link"
                 ).get_attribute("href")
 
-                movie_poster_url = movie.find_element(
-                    By.CLASS_NAME, "poster__image"
-                ).get_attribute("src")
+                movie_poster_url = "https://kranus.pro/kranus.pro.gif"
+                # movie_poster_url = movie.find_element(
+                #     By.CLASS_NAME, "poster__image"
+                # ).get_attribute("src")
 
                 movie_user_rate = rendered_movies_rates[idx].text
 

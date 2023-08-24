@@ -1,29 +1,23 @@
 version: "3.6"
 
-
-
 services:
-  selenium:
-    image: selenium/standalone-chrome
+  headless_chrome:
+    image: browserless/chrome:latest
     ports:
-      - 4444:4444
-    restart: always
+      - "3000:3000"
+    container_name: headless_chrome
+    environment:
+      - DEBUG=-*
 
   filmweb_watchdog:
     depends_on:
-      - selenium
+      - headless_chrome
     container_name: filmweb_watchdog
     image: filmweb_watchdog
-    # volumes:
-    #   - type: volume
-    #     source: database
-    #     target: /db
-    #     volume:
-    #       nocopy: true
+    volumes:
+      - type: bind
+        source: ./data
+        target: /data
     build:
       context: .
       dockerfile: Dockerfile
-    environment:
-      FILMWEB_USER: "****"
-      DISCORD_WEBHOOK_URL: "******"
-      DISCORD_WEBHOOK_COLOR: "ffae00"
