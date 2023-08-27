@@ -1,3 +1,5 @@
+import logging
+
 from modules.DatabaseManager import DBManager
 from modules.FilmWebScrapper import FilmWebScrapper
 
@@ -69,16 +71,14 @@ class FilmWebWatchdog:
         movies_to_add_to_db = []
         already_in_db_ids = [db_movie[1] for db_movie in db_movies]
 
-        print(already_in_db_ids)
-
         for filmweb_movie in filmweb_movies:
             if int(filmweb_movie.movie_id) in already_in_db_ids:
-                print(
+                logging.debug(
                     f"{filmweb_movie.movie_title} {filmweb_movie.movie_id} is already in the database"
                 )
+
                 continue
 
             movies_to_add_to_db.append(filmweb_movie)
-            print(filmweb_movie)
 
         return movies_to_add_to_db

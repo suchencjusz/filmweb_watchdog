@@ -3,11 +3,10 @@ from modules.MovieDataObject import MovieData
 
 
 class DiscordNotify:
-    def __init__(self, webhook_url, webhook_color) -> None:
+    def __init__(self, webhook_url) -> None:
         self.webhook_url = webhook_url
-        self.webhook_color = webhook_color
 
-    def notify(self, movie: MovieData) -> None:
+    def notify(self, movie: MovieData, embed_color: str) -> None:
         """
         Send notification to discord webhook.
 
@@ -18,7 +17,7 @@ class DiscordNotify:
 
         embed = DiscordEmbed(title=movie.movie_title, url=movie.movie_url)
 
-        embed.set_color(color=self.webhook_color)
+        embed.set_color(color=embed_color)
         embed.set_provider(name="Filmweb", url="https://www.filmweb.pl")
         embed.set_thumbnail(url=movie.movie_poster_url)
         embed.set_footer(text="Filmweb Watchdog")
