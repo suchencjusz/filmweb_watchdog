@@ -1,18 +1,32 @@
 import time
+import sys
+import os
+import logging
 
 from modules.FilmwebWatchod import FilmWebWatchdog
 from modules.DiscordNotify import DiscordNotify
 from modules.ConfigManager import ConfigManager
+
+VERSION = "1.0.0"
+
+logging.basicConfig(level=int(os.environ["LOG_LEVEL"]))
+formatter = logging.Formatter(
+    "%(asctime)s | %(levelname)s | %(message)s", "%m-%d-%Y %H:%M:%S"
+)
+
+stdout_handler = logging.StreamHandler(sys.stdout)
+stdout_handler.setLevel(logging.DEBUG)
+stdout_handler.setFormatter(formatter)
 
 
 def main():
     config = ConfigManager("data/config.json").load()
 
     fm_watchdog = FilmWebWatchdog("hello")
-    dc_notify = DiscordNotify(config["discord"]["webhook_url"], "ff0000")
+    dc_notify = DiscordNotify(config["discord"]["webhook_url"])
 
     for user in config["users"]:
-        print(f"Checking {user['name']} movies...")
+        logging.info(f"Checking user: {user['name']}")
 
         fm_watchdog.change_user(user["name"])
         db_movies = fm_watchdog.get_all_watched_movies_from_db()
@@ -26,14 +40,14 @@ def main():
             fm_watchdog.insert_multiple_data_to_db(movies_not_in_db)
 
             for movie in movies_not_in_db:
-                dc_notify.notify(movie=movie)
+                dc_notify.notify(movie=movie, embed_color=user["embed_color"])
         else:
-            print("No new movies to add to database.")
+            logging.info(f"No new movies for user: {user['name']}")
 
-    # fm_watchdog.filmweb_scraper.close_driver()
+    fm_watchdog.filmweb_scraper.close_driver()
 
 
 if __name__ == "__main__":
-    print("Starting FilmWebWatchdog...")
+    logging.info(f"Starting FilmWebWatchdog - {VERSION}")
     time.sleep(10)
     main()
