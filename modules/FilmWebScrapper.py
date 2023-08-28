@@ -10,7 +10,7 @@ from selenium.webdriver.common.by import By
 from modules.MovieDataObject import MovieData
 
 
-DOCKER_CONTAINER = os.environ.get('DOCKER_CONTAINER', False)
+DOCKER_CONTAINER = os.environ.get("DOCKER_CONTAINER", False)
 
 
 class FilmWebScrapper:
@@ -20,10 +20,10 @@ class FilmWebScrapper:
         chrome_options.add_argument("--headless")
         chrome_options.add_argument("--window-size=1920,1080")
         chrome_options.add_argument("--start-maximized")
-    
+
         if DOCKER_CONTAINER:
             self.driver = webdriver.Remote(
-            command_executor='http://chrome:4444',
+                command_executor="http://chrome:4444",
                 options=chrome_options,
             )
         else:
@@ -38,6 +38,7 @@ class FilmWebScrapper:
         Close driver.
         """
 
+        logging.debug("Closing driver")
         self.driver.quit()
 
     def get_ready(self) -> None:
@@ -51,8 +52,9 @@ class FilmWebScrapper:
             self.driver.find_element(
                 By.XPATH, '//*[@id="didomi-notice-agree-button"]'
             ).click()
+            logging.debug("Cookies accepted")
         except selenium.common.exceptions.NoSuchElementException:
-            print("No cookies to accept")
+            logging.debug("No cookies to accept")
             pass
 
     def get_better_movie_poster(self, poster_url: str):
@@ -93,12 +95,12 @@ class FilmWebScrapper:
         url = f"https://www.filmweb.pl/user/{filmweb_user}/films"
         movies_return = []
 
-        print(url)
+        logging.debug(f"Getting first page of movies from {url}")
 
         try:
             self.driver.get(url)
         except Exception as e:
-            print("Error while getting first page of watched movies from FilmWeb", e)
+            logging.error(e)
             return []
 
         time.sleep(5)
@@ -112,7 +114,7 @@ class FilmWebScrapper:
 
         time.sleep(3)
 
-        print("Parsing movies from FilmWeb")
+        logging.debug("Parsing movies from FilmWeb")
 
         movies = 0
         try:
@@ -124,12 +126,11 @@ class FilmWebScrapper:
             logging.error(e)
             return []
 
-        print("Parsing movies from FilmWeb")
         movies_parsed = movies.find_elements(
             By.XPATH,
             '//div[@class="voteBoxes__box userVotesPage__result __FiltersResult animatedPopList__item"]',
         )
-        print("Movies parsed")
+        logging.debug(f"Found {len(movies_parsed)} movies - parsing succeded")
 
         rendered_movies_rates = movies.find_elements(
             By.XPATH, '//span[@class="userRate__rate"]'

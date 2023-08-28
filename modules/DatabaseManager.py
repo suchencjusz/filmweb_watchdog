@@ -1,4 +1,5 @@
 import sqlite3
+import logging
 
 
 class DBManager:
@@ -54,5 +55,5 @@ class DBManager:
 
         for movie in movie_data:
             self.insert_one_movie_to_db(movie.movie_id)
-            print(f"Added {movie.movie_title} {movie.movie_id} to database")
-        print(f"All movies added to database {len(movie_data)}")
+            logging.debug(f"Added {movie.movie_title} {movie.movie_id} to database")
+        logging.debug(f"All movies added to database {len(movie_data)}")
