@@ -24,10 +24,13 @@ services:
       dockerfile: Dockerfile
     environment:
       - DOCKER_CONTAINER=True
-    restart: unless-stopped
+      - LOG_LEVEL=20
+    restart: unless-stopped 
 
-  restarter:
-    image: docker:cli
-    volumes: ["/var/run/docker.sock:/var/run/docker.sock"]
-    command: ["/bin/sh", "-c", "while true; do sleep 43200; docker restart filmweb_watchdog; done"]
+  watchtower:
+    image: containrrr/watchtower
+    container_name: watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --interval 600 filmweb_watchdog
     restart: unless-stopped

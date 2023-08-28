@@ -1,8 +1,22 @@
+import os
+import sys
 import time
+import logging
 
 from modules.FilmwebWatchod import FilmWebWatchdog
 from modules.DiscordNotify import DiscordNotify
 from modules.ConfigManager import ConfigManager
+
+VERSION = "1.0.1"
+
+logging.basicConfig(level=int(os.environ["LOG_LEVEL"]))
+formatter = logging.Formatter(
+    "%(asctime)s | %(levelname)s | %(message)s", "%m-%d-%Y %H:%M:%S"
+)
+
+stdout_handler = logging.StreamHandler(sys.stdout)
+stdout_handler.setLevel(logging.DEBUG)
+stdout_handler.setFormatter(formatter)
 
 
 def main():
@@ -36,4 +50,8 @@ def main():
 if __name__ == "__main__":
     print("Starting FilmWebWatchdog...")
     time.sleep(10)
-    main()
+
+    while True:
+        main()
+        logging.info("Sleeping for 6 hours")
+        time.sleep(60 * 60 * 6) # temp solution

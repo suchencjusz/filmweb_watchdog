@@ -1,5 +1,7 @@
 import time
 import os
+import logging
+import requests
 import selenium.common.exceptions
 
 from selenium import webdriver
@@ -53,6 +55,32 @@ class FilmWebScrapper:
             print("No cookies to accept")
             pass
 
+    def get_better_movie_poster(self, poster_url: str):
+        """
+        Get better movie poster from filmweb.
+
+        :param poster_url: url to movie poster
+
+        :return: url to better movie poster
+        """
+
+        if poster_url == "":
+            return poster_url
+
+        last_url_number = poster_url.split("/")[-1].split(".")[-2]
+        last_url_number = "." + last_url_number + "."
+
+        better_poster_url = poster_url.replace(last_url_number, ".3.")
+
+        time.sleep(0.5)
+
+        r = requests.head(poster_url)
+        if r.status_code == 200:
+            return better_poster_url
+        else:
+            return poster_url
+
+
     def get_first_page_watched_movies_from_filmweb(self, filmweb_user: str) -> list:
         """
         Get first page of watched movies from filmweb.
@@ -86,10 +114,15 @@ class FilmWebScrapper:
 
         print("Parsing movies from FilmWeb")
 
-        movies = self.driver.find_element(
-            By.XPATH, '//*[@id="site"]/div[3]/div/section[2]/section/div/div'
-        )
-        print("Movies parsed")
+        movies = 0
+        try:
+            movies = self.driver.find_element(
+                By.XPATH,
+                '//div[@class="userVotesPage__results voteBoxes __FiltersResults animatedPopList __OwnerProfile isInited"]',
+            )
+        except Exception as e:
+            logging.error(e)
+            return []
 
         print("Parsing movies from FilmWeb")
         movies_parsed = movies.find_elements(
@@ -133,10 +166,16 @@ class FilmWebScrapper:
                     By.CLASS_NAME, "preview__link"
                 ).get_attribute("href")
 
-                movie_poster_url = "https://kranus.pro/kranus.pro.gif"
-                # movie_poster_url = movie.find_element(
-                #     By.CLASS_NAME, "poster__image"
-                # ).get_attribute("src")
+                movie_poster_url = ""
+                try:
+                    movie_poster_url = movie.find_element(
+                        By.CLASS_NAME, "poster__image"
+                    ).get_attribute("src")
+                except selenium.common.exceptions.NoSuchElementException:
+                    logging.debug(f"No poster found for {movie_title} - skipping")
+                    pass
+                
+                movie_poster_url = self.get_better_movie_poster(movie_poster_url)
 
                 movie_user_rate = rendered_movies_rates[idx].text
 
