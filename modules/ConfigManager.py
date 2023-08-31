@@ -17,7 +17,6 @@ class ConfigManager:
         config_schema = {
             "discord": {"webhook_url": ""},
             "users": [{"name": "example", "embed_color": "faca1b"}],
-            "schedule": False,
         }
 
         return config_schema

@@ -23,7 +23,7 @@ class DiscordNotify:
         embed.set_footer(text="Filmweb Watchdog")
 
         embed.add_embed_field(
-            name="Rating", value=f"{self.start_emoji_counter(movie.movie_rating)}"
+            name="Rating", value=f"{self.start_emoji_counter(float(movie.movie_rating))}"
         )
         embed.add_embed_field(name="⭐", value=f"{movie.movie_rating}/10")
 
@@ -31,7 +31,7 @@ class DiscordNotify:
 
         embed.add_embed_field(
             name=f"{movie.rated_by} rating",
-            value=f"{self.start_emoji_counter(movie.user_rating)}",
+            value=f"{self.start_emoji_counter(float(movie.user_rating))}",
         )
         embed.add_embed_field(name="⭐", value=f"{movie.user_rating}/10")
 
@@ -64,22 +64,32 @@ class DiscordNotify:
         """
 
         return_string = ""
-        stars = float(stars)
+        stars_int = int(stars)
 
         full = "🌕"
+        near_full = "🌖"
         half = "🌗"
+        near_zero = "🌘"
         zero = "🌑"
 
-        t = 10
+        t = 10 - stars_int
 
-        for i in range(0, int(stars)):
+        for i in range(0, stars_int):
             return_string += full
 
-        if stars - int(stars) >= 0.5:
-            return_string += half
-            t = 9
+        difference = stars - float(stars_int)
 
-        for i in range(0, t - int(stars)):
+        if difference >= 0.7:
+            return_string += near_full
+            t = t - 1
+        elif difference >= 0.3:
+            return_string += half
+            t = t - 1
+        elif difference > 0:
+            return_string += near_zero
+            t = t - 1
+
+        for i in range(0, t):
             return_string += zero
 
         return return_string
