@@ -31,7 +31,7 @@ class DiscordNotify:
 
         embed.add_embed_field(
             name=f"{movie.rated_by} rating",
-            value=f"{self.start_emoji_counter(float(movie.user_rating))}",
+            value=f"{self.start_emoji_counter(movie.user_rating)}",
         )
         embed.add_embed_field(name="⭐", value=f"{movie.user_rating}/10")
 
