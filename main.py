@@ -7,9 +7,10 @@ from modules.FilmwebWatchod import FilmWebWatchdog
 from modules.DiscordNotify import DiscordNotify
 from modules.ConfigManager import ConfigManager
 
-VERSION = "1.0.1"
+VERSION = "1.0.2"
 
 logging.basicConfig(level=int(os.environ["LOG_LEVEL"]))
+# logging.basicConfig(level=logging.INFO)
 formatter = logging.Formatter(
     "%(asctime)s | %(levelname)s | %(message)s", "%m-%d-%Y %H:%M:%S"
 )

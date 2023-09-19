@@ -92,6 +92,13 @@ class FilmWebScrapper:
         :return: list of MovieData objects with movies from filmweb
         """
 
+        def isfloat(num):
+            try:
+                float(num)
+                return True
+            except ValueError:
+                return False
+
         url = f"https://www.filmweb.pl/user/{filmweb_user}/films"
         movies_return = []
 
@@ -189,6 +196,9 @@ class FilmWebScrapper:
                     if movie.find_element(By.CLASS_NAME, "voteCommentText__label")
                     else ""
                 )
+
+                if isfloat(movie_user_rate) is False:
+                    continue
 
                 movies_return.append(
                     MovieData(
