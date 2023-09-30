@@ -10,6 +10,7 @@ from modules.ConfigManager import ConfigManager
 VERSION = "1.1.0"
 
 logging.basicConfig(level=int(os.environ["LOG_LEVEL"]))
+# logging.basicConfig(level=logging.INFO)
 formatter = logging.Formatter(
     "%(asctime)s | %(levelname)s | %(message)s", "%m-%d-%Y %H:%M:%S"
 )
