@@ -7,7 +7,7 @@ from modules.FilmwebWatchod import FilmWebWatchdog
 from modules.DiscordNotify import DiscordNotify
 from modules.ConfigManager import ConfigManager
 
-VERSION = "1.0.1"
+VERSION = "1.1.0"
 
 logging.basicConfig(level=int(os.environ["LOG_LEVEL"]))
 formatter = logging.Formatter(
@@ -41,6 +41,9 @@ def main():
 
             for movie in movies_not_in_db:
                 dc_notify.notify(movie=movie, embed_color=user["embed_color"])
+                logging.warning(
+                    f"New movie for user: {user['name']} - {movie.movie_title} {movie.movie_year} {movie.movie_rating} {movie.movie_id} {movie.movie_url} {movie.movie_poster_url} {movie.movie_director} {movie.movie_scenarist} {movie.user_rating} {movie.user_text_opinion} {movie.rated_by}"
+                )
         else:
             logging.info(f"No new movies for user: {user['name']}")
 

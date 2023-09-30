@@ -45,7 +45,13 @@ class DiscordNotify:
         embed.add_embed_field(name="Title", value=movie.movie_title)
         embed.add_embed_field(name="Year", value=movie.movie_year)
         embed.add_embed_field(name="ID", value=movie.movie_id)
+        
+        if movie.movie_director != "":
+            embed.add_embed_field(name="Director", value=movie.movie_director)
 
+        if movie.movie_scenarist != "":
+            embed.add_embed_field(name="Scenarist", value=movie.movie_scenarist)
+        
         embed.set_footer(text="Filmweb Watchdog • github.com/suchencjusz")
         embed.set_timestamp()
 
