@@ -1,7 +1,5 @@
 # NOW AS DISCORD BOT
 https://discordbotlist.com/bots/filman
-https://discordbotlist.com/bots/filman
-https://discordbotlist.com/bots/filman
 
 
 
