@@ -1,3 +1,12 @@
+# NOW AS DISCORD BOT
+https://discordbotlist.com/bots/filman
+https://discordbotlist.com/bots/filman
+https://discordbotlist.com/bots/filman
+
+
+
+
+
 # Filmweb Watchdog
 *Have you ever wanted to get notifications from filmweb to your discord server? no? now it's possible!!!*
 
